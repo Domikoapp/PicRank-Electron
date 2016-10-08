@@ -1,4 +1,5 @@
+var sqlite3 = require("sqlite3");
 function HelloTest() {
-    alert('hello world');
+    alert('開発楽しいですね');
 }
 //# sourceMappingURL=index.js.map
