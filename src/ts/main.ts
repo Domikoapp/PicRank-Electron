@@ -39,11 +39,14 @@ class PicRank {
             height: 400,
             minWidth: 500,
             minHeight: 200,
+            resizable: true,
+            frame: true,
+            movable: true,
             acceptFirstMouse: true,
-            titleBarStyle: 'hidden'
+            titleBarStyle: 'default'
         });
 
-        this.mainWindow.loadURL('file://' + __dirname + '/../index.html');
+        this.mainWindow.loadURL('file://' + __dirname + '/../html/index.html');
 
         this.mainWindow.on('closed', () => {
             this.mainWindow = null;
