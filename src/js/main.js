@@ -1,9 +1,9 @@
+// Nodeモジュール読み込み
 var electron = require("electron");
 var application = electron.app;
 var BWindow = electron.BrowserWindow;
-var fs = require("fs");
-var path = require("path");
-var sqlite = require("sqlite3");
+//自作モジュール読み込み
+var picrankDB = require('./dao/pic-rank-db.js');
 /**
  * PicRankアプリケーションメインプロセス制御クラス
  */
@@ -16,7 +16,7 @@ var PicRank = (function () {
         this.app.on('ready', this.onReady);
         this.app.on('close', this.OnClose);
         // DB初期化
-        this.db = new PicRankDB(dbpath);
+        this.db = new picrankDB.PicRankDB(dbpath);
     }
     PicRank.prototype.onWindowAllClosed = function () {
         if (process.platform != 'darwin') {
@@ -40,34 +40,11 @@ var PicRank = (function () {
         this.mainWindow.webContents.openDevTools();
     };
     PicRank.prototype.OnClose = function () {
-        this.db.close();
-    };
-    return PicRank;
-}());
-/**
- * データベースマネージャ
- */
-var PicRankDB = (function () {
-    /**
-     * データベース初期化処理
-     */
-    function PicRankDB(dbpath) {
-        console.log("file:/" + dbpath);
-        this.db = new sqlite.Database(dbpath);
-        if (!fs.existsSync(dbpath)) {
-            this.db.run("create table test (id interger, data string);");
-        }
-        console.log("File exists : " + fs.existsSync(dbpath));
-    }
-    /**
-     * データベースクローズ処理
-     */
-    PicRankDB.prototype.close = function () {
         if (this.db != null) {
             this.db.close();
         }
     };
-    return PicRankDB;
+    return PicRank;
 }());
 /**
  * アプリケーションエントリーポイント
