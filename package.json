@@ -1,0 +1,15 @@
+{
+  "name": "pic-rank",
+  "version": "0.0.1",
+  "description": "Photo manager that can rank all of photo in it.",
+  "main": "./src/js/main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Domikoapp",
+  "license": "ISC",
+  "devDependencies": {
+    "electron-prebuilt": "^1.4.3",
+    "typescript": "^2.0.3"
+  }
+}
