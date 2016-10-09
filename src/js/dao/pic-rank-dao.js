@@ -3,13 +3,15 @@ var sqlite = require("sqlite3");
 var fs = require("fs");
 /**
  * すべてのDAOのベースとなるDAO
+ * 全DAOに共通する処理はここに書く
  */
 var PicRankDAO = (function () {
     /**
      * データベース初期化処理
      */
-    function PicRankDAO(dbpath) {
-        this.db = new sqlite.Database(dbpath);
+    function PicRankDAO(db) {
+        this.db = db;
+        console.log("this is base DAO");
     }
     /**
      * データベースクローズ処理
@@ -22,4 +24,4 @@ var PicRankDAO = (function () {
     return PicRankDAO;
 }());
 exports.PicRankDAO = PicRankDAO;
-//# sourceMappingURL=pic-rank-db.js.map
+//# sourceMappingURL=pic-rank-dao.js.map

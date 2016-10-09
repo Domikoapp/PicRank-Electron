@@ -12,7 +12,6 @@
     "electron-prebuilt": "^1.4.3",
     "filecopy": "^2.1.2",
     "fs": "0.0.1-security",
-    "path": "^0.12.7",
     "sqlite3": "^3.1.6",
     "typescript": "^2.0.3"
   }

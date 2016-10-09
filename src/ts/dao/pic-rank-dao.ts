@@ -2,22 +2,20 @@ const sqlite = require("sqlite3");
 const fs = require("fs");
 
 /**
- * データベースマネージャ
+ * すべてのDAOのベースとなるDAO
+ * 全DAOに共通する処理はここに書く
  */
-export class PicRankDB {
-    private db;
+export class PicRankDAO {
+    /** データベースコネクション */
+    protected db;
 
     /**
      * データベース初期化処理
      */
-    constructor(dbpath) {
-        this.db = new sqlite.Database(dbpath);
-        if(!fs.existsSync(dbpath)) {
-            //this.db.run("create table test (id interger, data string);");
-        }
+    constructor(db) {
+        this.db = db;
+        console.log("this is base DAO");
     }
-
-    public 
 
     /**
      * データベースクローズ処理

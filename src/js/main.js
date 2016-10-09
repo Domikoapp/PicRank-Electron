@@ -1,9 +1,11 @@
+"use strict";
 // Nodeモジュール読み込み
 var electron = require("electron");
 var application = electron.app;
 var BWindow = electron.BrowserWindow;
-//自作モジュール読み込み
-var picrankDB = require('./dao/pic-rank-db.js');
+var ipc = electron.ipcMain;
+// 自作モジュール読み込み
+var pic_rank_dbmanager_1 = require("./dao/pic-rank-dbmanager");
 /**
  * PicRankアプリケーションメインプロセス制御クラス
  */
@@ -16,8 +18,12 @@ var PicRank = (function () {
         this.app.on('ready', this.onReady);
         this.app.on('close', this.OnClose);
         // DB初期化
-        this.db = new picrankDB.PicRankDB(dbpath);
+        this.db = new pic_rank_dbmanager_1.PicRankDBManager(dbpath);
+        // レンダラプロセスとの通信
     }
+    PicRank.prototype.registerPics = function () {
+        console.log("function register pics");
+    };
     PicRank.prototype.onWindowAllClosed = function () {
         if (process.platform != 'darwin') {
             this.app.quit();
@@ -54,4 +60,10 @@ var PicRank = (function () {
  */
 var dbpath = "./db/test.db";
 var picrank = new PicRank(application, dbpath);
+// 写真の登録
+ipc.on("register-pics-req", function (event, picsJSON) {
+    var pics = JSON.parse(picsJSON);
+    console.dir(pics);
+    event.sender.send("register-pics-resp", pics.length + " files");
+});
 //# sourceMappingURL=main.js.map

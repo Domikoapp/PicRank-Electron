@@ -2,9 +2,11 @@
 const electron = require("electron");
 const application = electron.app;
 const BWindow = electron.BrowserWindow;
+const ipc = electron.ipcMain;
 
-//自作モジュール読み込み
-const picrankDB = require('./dao/pic-rank-db.js');
+// 自作モジュール読み込み
+import {PicRankDBManager} from "./dao/pic-rank-dbmanager";
+import {Picture} from "./entity/picture";
 
 declare var __dirname, process;
 
@@ -14,7 +16,7 @@ declare var __dirname, process;
 class PicRank {
     private app: Electron.App;
     private mainWindow: Electron.BrowserWindow = null;
-    private db;
+    private db: PicRankDBManager;
 
     constructor(app: Electron.App, dbpath: string){
         // アプリケーションイベント
@@ -24,7 +26,13 @@ class PicRank {
         this.app.on('close', this.OnClose);
 
         // DB初期化
-        this.db = new picrankDB.PicRankDB(dbpath);
+        this.db = new PicRankDBManager(dbpath);
+
+        // レンダラプロセスとの通信
+    }
+
+    public registerPics() {
+        console.log("function register pics");
     }
 
     onWindowAllClosed(){
@@ -66,3 +74,10 @@ class PicRank {
  */
 const dbpath = "./db/test.db";
 const picrank = new PicRank(application, dbpath);
+
+// 写真の登録
+ipc.on("register-pics-req", (event, picsJSON) => {
+    const pics: Picture[] = JSON.parse(picsJSON);
+    console.dir(pics);
+    event.sender.send("register-pics-resp", pics.length + " files");
+});
