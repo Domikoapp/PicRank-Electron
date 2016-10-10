@@ -14,7 +14,7 @@ var PictureDAO = (function (_super) {
         _super.call(this);
     }
     /**
-     * すでに登録してある写真が存在するか調べる
+     * 重複する写真が存在するか調べる
      */
     PictureDAO.prototype.getDuplicatePicture = function (pics, callback) {
         var _this = this;
@@ -35,8 +35,7 @@ var PictureDAO = (function (_super) {
         for (var i = 0; i < pics.length; i++) {
             _loop_1();
         }
-        Promise.all(promises)
-            .then(function () {
+        Promise.all(promises).then(function () {
             callback(duplicatPics);
         });
     };

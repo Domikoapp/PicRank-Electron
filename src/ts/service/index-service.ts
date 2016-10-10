@@ -27,7 +27,7 @@ export class IndexService {
      * 写真を登録する処理
      */
     public registerPics(pics: Picture[]) {
-                // データベースに写真を登録する関数（複数箇所で使うためくくりだし）
+        // データベースに写真を登録する関数（複数箇所で使うためくくりだし）
         var register = function (pics: Picture[]) {
             console.log("register" + pics.length + "pics");
             console.log(pics);

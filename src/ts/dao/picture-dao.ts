@@ -11,7 +11,7 @@ export class PictureDAO extends PicRankDAO {
     }
 
     /**
-     * すでに登録してある写真が存在するか調べる
+     * 重複する写真が存在するか調べる
      */
     public getDuplicatePicture(pics: Picture[], callback: (result: Picture[]) => void) {
         var promises = [];
@@ -28,10 +28,9 @@ export class PictureDAO extends PicRankDAO {
                 });
             }));
         }
-        Promise.all(promises)
-               .then(() => {
-                    callback(duplicatPics);
-               });
+        Promise.all(promises).then(() => {
+            callback(duplicatPics);
+        });
     }
 
     /**
