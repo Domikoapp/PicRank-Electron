@@ -21,8 +21,8 @@ document.getElementById("ddtarget").ondrop = function(e) {
     }
 
     // DB登録
-    ipcRenderer.send("register-pics-req", JSON.stringify(pics));
-    
+    ipcRenderer.send("register-pics-req", JSON.stringify(pics), undefined);
+
     // ファイルコピー
     /*filecopy(file.path, "db/pictures/" + file.name, {
             mkdirp: true
@@ -32,3 +32,4 @@ document.getElementById("ddtarget").ondrop = function(e) {
 ipcRenderer.on("register-pics-resp", (event, arg) => {
     console.log("async : " + arg);
 });
+

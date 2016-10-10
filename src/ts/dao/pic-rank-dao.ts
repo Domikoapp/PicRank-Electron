@@ -8,13 +8,13 @@ const fs = require("fs");
 export class PicRankDAO {
     /** データベースコネクション */
     protected db;
+    private dbpath = "./db/picrank.db";
 
     /**
      * データベース初期化処理
      */
-    constructor(db) {
-        this.db = db;
-        console.log("this is base DAO");
+    constructor() {
+        this.db = new sqlite.Database(this.dbpath);
     }
 
     /**

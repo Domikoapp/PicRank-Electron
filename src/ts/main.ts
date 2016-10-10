@@ -5,44 +5,56 @@ const BWindow = electron.BrowserWindow;
 const ipc = electron.ipcMain;
 
 // 自作モジュール読み込み
-import {PicRankDBManager} from "./dao/pic-rank-dbmanager";
+import {IndexService} from "./service/index-service";
 import {Picture} from "./entity/picture";
 
 declare var __dirname, process;
+
 
 /**
  * PicRankアプリケーションメインプロセス制御クラス
  */
 class PicRank {
     private app: Electron.App;
-    private mainWindow: Electron.BrowserWindow = null;
-    private db: PicRankDBManager;
+    private indexView: Electron.BrowserWindow = new BWindow({
+            width: 800,
+            height: 400,
+            minWidth: 500,
+            minHeight: 200,
+            resizable: true,
+            frame: true,
+            movable: true,
+            acceptFirstMouse: true,
+            titleBarStyle: 'default'
+    });;
+    private indexService: IndexService;
 
-    constructor(app: Electron.App, dbpath: string){
+    constructor(app: Electron.App){
         // アプリケーションイベント
         this.app = app;
         this.app.on('window-all-closed', this.onWindowAllClosed);
-        this.app.on('ready', this.onReady);
         this.app.on('close', this.OnClose);
-
-        // DB初期化
-        this.db = new PicRankDBManager(dbpath);
-
-        // レンダラプロセスとの通信
+        this.initIndexView();
     }
 
-    public registerPics() {
-        console.log("function register pics");
+    /**
+     * 写真を登録する
+     * @param picsJSON:string - 写真情報のJSON
+     */
+    public registerPics(pics: Picture[]) {
+        console.log(this.indexView);
+        console.log(this.indexService);
+        this.indexService.registerPics(pics);
     }
 
-    onWindowAllClosed(){
+    public onWindowAllClosed(){
         if(process.platform != 'darwin'){
             this.app.quit();
         }
     }
 
-    onReady(){
-        this.mainWindow = new BWindow({
+    public initIndexView(){
+        this.indexView = new BWindow({
             width: 800,
             height: 400,
             minWidth: 500,
@@ -54,17 +66,19 @@ class PicRank {
             titleBarStyle: 'default'
         });
 
-        this.mainWindow.loadURL('file://' + __dirname + '/../html/index.html');
+        this.indexView.loadURL('file://' + __dirname + '/../html/index.html');
 
-        this.mainWindow.on('closed', () => {
-            this.mainWindow = null;
+        this.indexView.on('closed', () => {
+            this.indexView = null;
         });
-        this.mainWindow.webContents.openDevTools();
+        this.indexView.webContents.openDevTools();
+
+        this.indexService = new IndexService(this.indexView);
     }
 
-    OnClose(){
-        if (this.db != null) {
-            this.db.close();
+    public OnClose(){
+        if (this.indexService != null) {
+            this.indexService.OnClose();
         }
     }
 }
@@ -72,12 +86,15 @@ class PicRank {
 /**
  * アプリケーションエントリーポイント
  */
-const dbpath = "./db/test.db";
-const picrank = new PicRank(application, dbpath);
+var picrank;
+application.on("ready", function() {
+    picrank = new PicRank(application);
+});
 
-// 写真の登録
-ipc.on("register-pics-req", (event, picsJSON) => {
+/*
+ * 写真の登録
+ */
+ipc.on("register-pics-req", (event, picsJSON: string, allowDuplicated: boolean) => {
     const pics: Picture[] = JSON.parse(picsJSON);
-    console.dir(pics);
-    event.sender.send("register-pics-resp", pics.length + " files");
+    picrank.registerPics(pics);
 });

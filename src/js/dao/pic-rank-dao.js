@@ -9,9 +9,9 @@ var PicRankDAO = (function () {
     /**
      * データベース初期化処理
      */
-    function PicRankDAO(db) {
-        this.db = db;
-        console.log("this is base DAO");
+    function PicRankDAO() {
+        this.dbpath = "./db/picrank.db";
+        this.db = new sqlite.Database(this.dbpath);
     }
     /**
      * データベースクローズ処理
